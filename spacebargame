@@ -1,21 +1,27 @@
+#Space Bar Game
+#George Foulds
+
 import sys, time
 from PyQt4 import QtCore, QtGui
-from msvcrt import getch
-spacecount = 0
 
 class gui(QtGui.QMainWindow):
 
     def __init__(self):
         super(gui, self). __init__()
 
+        self.spacecount = 0
+        self.countnum = 0
+        self.gamerunning = False
+
         self.initUI()
 
-    def count(self):
-        global spacecount
-        key = getch()
+    def keyPressEvent(self, e):
+        if e.key() == QtCore.Qt.Key_W and self.gamerunning == True:
+            self.spacecount = self.spacecount + 1
+            self.countnum.setText(str(self.spacecount)) #Update every time button is pressed (useful for debugging)
 
-        if key == ord(' '):
-            spacecount = spacecount + 1
+    def startGame(self): #This is necessary because lambda cannot do assignments -_-
+        self.gamerunning = True
 
     def initUI(self):
 
@@ -24,9 +30,10 @@ class gui(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon('gameicon.png'))
 
         startbutt = QtGui.QPushButton('Play', self)
+        startbutt.setDefault(False     )
         startbutt.resize(100, 50)
         startbutt.move(10, 10)
-        startbutt.clicked.connect(self.count)
+        startbutt.clicked.connect(self.startGame) #Enable keypress capture
 
         quitbutt = QtGui.QPushButton('Quit', self)
         quitbutt.resize(100, 50)
@@ -51,9 +58,9 @@ class gui(QtGui.QMainWindow):
         counttext.move(100, 120)
         counttext.setText("Hitcount:")
 
-        countnum = QtGui.QLabel(self)
-        countnum.move(115, 140)
-        countnum.setText(str(spacecount))
+        self.countnum = QtGui.QLabel(self)
+        self.countnum.move(115, 140)
+        self.countnum.setText(str(self.spacecount))
 
         self.show()
 
