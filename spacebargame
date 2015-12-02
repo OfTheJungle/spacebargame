@@ -1,0 +1,68 @@
+import sys, time
+from PyQt4 import QtCore, QtGui
+from msvcrt import getch
+spacecount = 0
+
+class gui(QtGui.QMainWindow):
+
+    def __init__(self):
+        super(gui, self). __init__()
+
+        self.initUI()
+
+    def count(self):
+        global spacecount
+        key = getch()
+
+        if key == ord(' '):
+            spacecount = spacecount + 1
+
+    def initUI(self):
+
+        self.setGeometry(300, 300, 250, 300)
+        self.setWindowTitle('Super Press the Spacebar')
+        self.setWindowIcon(QtGui.QIcon('gameicon.png'))
+
+        startbutt = QtGui.QPushButton('Play', self)
+        startbutt.resize(100, 50)
+        startbutt.move(10, 10)
+        startbutt.clicked.connect(self.count)
+
+        quitbutt = QtGui.QPushButton('Quit', self)
+        quitbutt.resize(100, 50)
+        quitbutt.move(10, 70)
+        quitbutt.clicked.connect(QtCore.QCoreApplication.instance().quit)
+
+        hstext = QtGui.QLabel(self)
+        hstext.move(140, 2)
+        hstext.setText("High Scores:")
+
+        highscores = QtGui.QListWidget()
+        highscores.move(140, 12)
+        hs1 = QtGui.QListWidgetItem("1) ")
+        hs2 = QtGui.QListWidgetItem("2) ")
+        hs3 = QtGui.QListWidgetItem("3) ")
+        highscores.addItem(hs1)
+        highscores.addItem(hs2)
+        highscores.addItem(hs3)
+        highscores.show()
+
+        counttext = QtGui.QLabel(self)
+        counttext.move(100, 120)
+        counttext.setText("Hitcount:")
+
+        countnum = QtGui.QLabel(self)
+        countnum.move(115, 140)
+        countnum.setText(str(spacecount))
+
+        self.show()
+
+
+def main():
+
+    app = QtGui.QApplication(sys.argv)
+    ex = gui()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
