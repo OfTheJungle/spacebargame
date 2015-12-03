@@ -10,34 +10,35 @@ class gui(QtGui.QMainWindow):
     def __init__(self):
         super(gui, self). __init__()
 
-        self.presscount = 0
-        self.countnum = 0
-        self.gamerunning = False
-        self.time = 20
+        self.presscount = 0 #Keypresses
+        self.countnum = 0 #QLabel
+        self.gamerunning = False #Is the game running or not
+        self.gameduration = 30 #Game duration in seconds
 
         self.initUI()
-
-    def timer(self):
-        if self.gamerunning == True:
-            while time > 0:
-                t = threading.Timer(1.0, self.timeChange)
-                t.start()
-        if self.time == 0:
-            self.finishGame()
 
     def timeChange(self):
         self.time = self.time - 1
 
     def keyPressEvent(self, e):
-        if e.key() == QtCore.Qt.Key_W and self.gamerunning == True:
+        if e.key() == QtCore.Qt.Key_W and e.isAutoRepeat() == False and self.gamerunning == True:
             self.presscount = self.presscount + 1
             self.countnum.setText(str(self.presscount))  #Update every time button is pressed (useful for debugging)
 
     def startGame(self):  #This is necessary because lambda cannot do assignments
         self.gamerunning = True
-        self.timer()
+
+        self.presscount = 0 #Clear the current press count
+
+        t = threading.Timer(self.gameduration, self.finishGame) #Create a timer for the specified duration
+        t.start() #Start the timer
 
     def finishGame(self):
+
+        #---
+        #Put high score checking logic in here, it is the last thing to be called
+        #---
+        
         self.gamerunning = False
 
     def initUI(self):
