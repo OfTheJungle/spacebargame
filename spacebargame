@@ -1,32 +1,49 @@
 #Space Bar Game
 #George Foulds
 
-import sys, time
+import sys, threading, time
 from PyQt4 import QtCore, QtGui
+
 
 class gui(QtGui.QMainWindow):
 
     def __init__(self):
         super(gui, self). __init__()
 
-        self.spacecount = 0
+        self.presscount = 0
         self.countnum = 0
         self.gamerunning = False
+        self.time = 20
 
         self.initUI()
 
+    def timer(self):
+        if self.gamerunning == True:
+            while time > 0:
+                t = threading.Timer(1.0, self.timeChange)
+                t.start()
+        if self.time == 0:
+            self.finishGame()
+
+    def timeChange(self):
+        self.time = self.time - 1
+
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_W and self.gamerunning == True:
-            self.spacecount = self.spacecount + 1
-            self.countnum.setText(str(self.spacecount)) #Update every time button is pressed (useful for debugging)
+            self.presscount = self.presscount + 1
+            self.countnum.setText(str(self.presscount))  #Update every time button is pressed (useful for debugging)
 
-    def startGame(self): #This is necessary because lambda cannot do assignments -_-
+    def startGame(self):  #This is necessary because lambda cannot do assignments
         self.gamerunning = True
+        self.timer()
+
+    def finishGame(self):
+        self.gamerunning = False
 
     def initUI(self):
 
         self.setGeometry(300, 300, 250, 300)
-        self.setWindowTitle('Super Press the Spacebar')
+        self.setWindowTitle('Super Press W')
         self.setWindowIcon(QtGui.QIcon('gameicon.png'))
 
         startbutt = QtGui.QPushButton('Play', self)
@@ -60,7 +77,7 @@ class gui(QtGui.QMainWindow):
 
         self.countnum = QtGui.QLabel(self)
         self.countnum.move(115, 140)
-        self.countnum.setText(str(self.spacecount))
+        self.countnum.setText(str(self.presscount))
 
         self.show()
 
