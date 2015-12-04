@@ -1,7 +1,7 @@
 #Space Bar Game
 #George Foulds
 
-import sys, threading, time
+import sys, threading, json
 from PyQt4 import QtCore, QtGui
 
 
@@ -13,12 +13,9 @@ class gui(QtGui.QMainWindow):
         self.presscount = 0 #Keypresses
         self.countnum = 0 #QLabel
         self.gamerunning = False #Is the game running or not
-        self.gameduration = 30 #Game duration in seconds
+        self.gameduration = 20 #Game duration in seconds
 
         self.initUI()
-
-    def timeChange(self):
-        self.time = self.time - 1
 
     def keyPressEvent(self, e):
         if e.key() == QtCore.Qt.Key_W and e.isAutoRepeat() == False and self.gamerunning == True:
@@ -30,55 +27,57 @@ class gui(QtGui.QMainWindow):
 
         self.presscount = 0 #Clear the current press count
 
+        self.timertext.setText("Hammer W!!!") #Changes message displayed
+        self.timertext.setFont(self.font2) #Boldens the label font
+
         t = threading.Timer(self.gameduration, self.finishGame) #Create a timer for the specified duration
         t.start() #Start the timer
 
     def finishGame(self):
 
-        #---
-        #Put high score checking logic in here, it is the last thing to be called
-        #---
-        
+        self.timertext.setText("Click 'Play'")
+        self.timertext.setFont(self.font)
+
         self.gamerunning = False
 
     def initUI(self):
 
-        self.setGeometry(300, 300, 250, 300)
+        self.setGeometry(300, 300, 230, 170) #Creates window and sets it's size
         self.setWindowTitle('Super Press W')
         self.setWindowIcon(QtGui.QIcon('gameicon.png'))
 
-        startbutt = QtGui.QPushButton('Play', self)
-        startbutt.setDefault(False     )
+        startbutt = QtGui.QPushButton('Play', self) #Creates play button
+        startbutt.setDefault(False)
         startbutt.resize(100, 50)
         startbutt.move(10, 10)
         startbutt.clicked.connect(self.startGame) #Enable keypress capture
 
-        quitbutt = QtGui.QPushButton('Quit', self)
+        quitbutt = QtGui.QPushButton('Quit', self) #Creates quit button
         quitbutt.resize(100, 50)
         quitbutt.move(10, 70)
-        quitbutt.clicked.connect(QtCore.QCoreApplication.instance().quit)
+        quitbutt.clicked.connect(QtCore.QCoreApplication.instance().quit) #Closes game
 
-        hstext = QtGui.QLabel(self)
-        hstext.move(140, 2)
-        hstext.setText("High Scores:")
+        self.font = QtGui.QFont() #Creates standard font
+        self.font.setFamily("Helvetica")
 
-        highscores = QtGui.QListWidget()
-        highscores.move(140, 12)
-        hs1 = QtGui.QListWidgetItem("1) ")
-        hs2 = QtGui.QListWidgetItem("2) ")
-        hs3 = QtGui.QListWidgetItem("3) ")
-        highscores.addItem(hs1)
-        highscores.addItem(hs2)
-        highscores.addItem(hs3)
-        highscores.show()
+        self.font2 = QtGui.QFont() #Creates bold font
+        self.font2.setFamily("Helvetica")
+        self.font2.setBold(True)
 
         counttext = QtGui.QLabel(self)
-        counttext.move(100, 120)
+        counttext.move(150, 10)
+        counttext.setFont(self.font)
         counttext.setText("Hitcount:")
 
         self.countnum = QtGui.QLabel(self)
-        self.countnum.move(115, 140)
-        self.countnum.setText(str(self.presscount))
+        self.countnum.move(165, 30)
+        self.countnum.setFont(self.font)
+        self.countnum.setText(str(self.presscount)) #Sets label as default presscount
+
+        self.timertext = QtGui.QLabel(self)
+        self.timertext.move(145, 80)
+        self.timertext.setFont(self.font)
+        self.timertext.setText("Click 'Play'")
 
         self.show()
 
