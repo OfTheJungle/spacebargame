@@ -1,7 +1,7 @@
 #Space Bar Game
 #George Foulds
 
-import sys, threading, json
+import sys, threading
 from PyQt4 import QtCore, QtGui
 
 
