@@ -1,7 +1,7 @@
 #Space Bar Game
 #George Foulds
 
-import sys, threading
+import sys, threading, json
 from PyQt4 import QtCore, QtGui
 
 
@@ -14,6 +14,9 @@ class gui(QtGui.QMainWindow):
         self.countnum = 0 #QLabel
         self.gamerunning = False #Is the game running or not
         self.gameduration = 20 #Game duration in seconds
+        self.hslist = 0
+        self.f = open('highscores.json').read()
+        self.data = json.loads(self.f)
 
         self.initUI()
 
@@ -38,11 +41,47 @@ class gui(QtGui.QMainWindow):
         self.timertext.setText("Click 'Play'")
         self.timertext.setFont(self.font)
 
+        if self.presscount > int(self.data['highscores']['1']):
+            f = open('highscores.json', 'r')
+            data = json.load(f)
+            f.close()
+
+            tmp = data["highscores"]["1"]
+            data["highscores"]["1"] = self.presscount
+
+            f = open("highscores.json", "w+")
+            f.write(json.dumps(data))
+            f.close()
+
+        elif self.presscount > int(self.data['highscores']['2']):
+            f = open('highscores.json', 'r')
+            data = json.load(f)
+            f.close()
+
+            tmp = data["highscores"]["2"]
+            data["highscores"]["2"] = self.presscount
+
+            f = open("highscores.json", "w+")
+            f.write(json.dumps(data))
+            f.close()
+
+        elif self.presscount > int(self.data['highscores']['3']):
+            f = open('highscores.json', 'r')
+            data = json.load(f)
+            f.close()
+
+            tmp = data["highscores"]["3"]
+            data["highscores"]["3"] = self.presscount
+
+            f = open("highscores.json", "w+")
+            f.write(json.dumps(data))
+            f.close()
+
         self.gamerunning = False
 
     def initUI(self):
 
-        self.setGeometry(300, 300, 230, 170) #Creates window and sets it's size
+        self.setGeometry(300, 300, 230, 205) #Creates window and sets it's size
         self.setWindowTitle('Super Press W')
         self.setWindowIcon(QtGui.QIcon('gameicon.png'))
 
@@ -56,6 +95,14 @@ class gui(QtGui.QMainWindow):
         quitbutt.resize(100, 50)
         quitbutt.move(10, 70)
         quitbutt.clicked.connect(QtCore.QCoreApplication.instance().quit) #Closes game
+
+        self.hslist = QtGui.QListWidget(self)
+        self.hslist.move(120, 125)
+        self.hslist.resize(100, 70)
+        self.hslist.addItem('Highscores:')
+        self.hslist.addItem('1) ' + str(self.data['highscores']['1']))
+        self.hslist.addItem('2) ' + str(self.data['highscores']['2']))
+        self.hslist.addItem('3) ' + str(self.data['highscores']['3']))
 
         self.font = QtGui.QFont() #Creates standard font
         self.font.setFamily("Helvetica")
